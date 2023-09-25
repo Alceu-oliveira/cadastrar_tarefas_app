@@ -1,76 +1,86 @@
-<x-guest-layout>
-    <div class="max-w-6xl mx-auto">
-        <h1>Tarefas list</h1>
-        <div class="m-2 p-2">
-            @auth()
-                <!-- TODO remover primeiro link após resolver problema de autenticação nas rotas -->
-                <a class="px-4 py-3 rounded bg-green-400" href="{{ route('tarefas.create') }}">Create</a>
-                @if(auth()->user()->is_admin)
-                <a class="px-4 py-3 rounded bg-green-400" href="{{ route('tarefas.create') }}">Create</a>
-                @endif
-            @endauth
-        </div>
-        <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="flex flex-col">
-            <div class="my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Titulo
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Data Criacao</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Data Conclusao</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status</th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Edit</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($tarefas as $tarefa)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $tarefa['titulo'] }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $tarefa['data_criacao'] }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $tarefa['data_conclusao'] }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $tarefa['status'] }}
-                                    </td>
-                                                
+@extends('template_crud')
+@section('content')
+    <div class="card">
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @auth()
-                                        <button class="px-4 py-2 rounded-lg bg-blue-400">Editar tarefa</button>
-                                        <a href="{{ route('tarefas.edit', $tarefa['id']) }}">Edit</a>
+        <div class="card-header">
+            <h2>Lista de tarefas</h2>
 
-                                        <button class="px-4 py-2 rounded-lg bg-blue-400">Deletar tarefa</button>
-                                        <a href="{{ route('tarefas.destroy', $tarefa['id']) }}">Delete</a>
-                                        @endauth
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+                        <a class="btn btn-success float-end" href="{{ url('/tarefas/create') }}">Cadastrar</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Titulo</th>
+                                <th>Data Criacao</th>
+                                <th>Data Conclusao</th>
+                                <th>Status</th>
+                                <th>Descricao</th>
+                                                            
+                            </tr>
+                            @foreach($tarefas as $tarefa)
+                                <tr>
+                                    <td>{{ $tarefa['titulo'] }} </td>
+                                    <td>{{ $tarefa['data_criacao'] }} </td>
+                                    <td>{{ $tarefa['data_conclusao'] }}</td>
+                                    <td>{{ $tarefa['status'] }}</td>
+                                    <td>{{ $tarefa['descricao'] }}</td>
+                                    
+                                    <td>
+                                        <a class="btn btn-primary"
+                                            href="{{ url('/tarefas/editar', ['id' => $tarefa['id']]) }}">Editar</a>
+                                        <a onclick="funConfirma(this)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                            class="btn btn-danger"
+                                            href="{{ url('/tarefas/delete', ['id' => $tarefa['id']]) }}">Delete</a>
                                     </td>
                                 </tr>
-                                @empty
-                                <p>Sem tarefas</p>
-                                @endforelse
-                            </tbody>
+                            @endforeach
+                                            <tr>
+                                                <td> Total de tarefas  {{ $total}}</td>
+                                            </tr>
+
+
                         </table>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a class="btn btn-secondary float-end" href="{{ url('/dashboard') }}">Voltar</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-guest-layout>
+@endsection
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir essa tarefa?
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</a>
+                <a id="btnConfirma" href="" class="btn btn-primary">Confirmar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function funConfirma(elemento) {
+        console.log('chamou a funcao');
+        document.getElementById('btnConfirma').setAttribute('href', elemento.href);
+    }
+</script>
