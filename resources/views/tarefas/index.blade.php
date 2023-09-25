@@ -55,8 +55,11 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @auth()
-                                        <button class="px-4 py-2 rounded-lg bg-blue-400">Buy tarefa</button>
+                                        <button class="px-4 py-2 rounded-lg bg-blue-400">Editar tarefa</button>
                                         <a href="{{ route('tarefas.edit', $tarefa['id']) }}">Edit</a>
+
+                                        <button class="px-4 py-2 rounded-lg bg-blue-400">Deletar tarefa</button>
+                                        <a href="{{ route('tarefas.destroy', $tarefa['id']) }}">Delete</a>
                                         @endauth
                                     </td>
                                 </tr>

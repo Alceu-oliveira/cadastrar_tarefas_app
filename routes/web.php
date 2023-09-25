@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('tarefas/store', [TarefasController::class, 'store'])->name('tarefas.store');
 
     Route::get('/tarefas/editar/{id}',[TarefasController::class,'edit'])->name('tarefas.edit');
-    Route::put('/tarefas/editar', [TarefasController::class, 'update'])->name('tarefas.update');
+    Route::put('/tarefas/editar/{id}', [TarefasController::class, 'update'])->name('tarefas.update');
     Route::get('/tarefas/delete/{id}', [TarefasController::class, 'destroy'])->name('tarefas.destroy');
 
 
